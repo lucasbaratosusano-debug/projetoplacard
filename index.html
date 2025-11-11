@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1914520929133361');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1914520929133361&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aviator Game - Gráfico Animado</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2a2a2a 100%);
+        color: white;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .logo {
+        color: #ff4444;
+        font-size: 28px;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+    }
+
+    .nav-tabs {
+        display: flex;
+        gap: 20px;
+    }
+
+    .nav-tab {
+        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .nav-tab.active {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .header-right {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .help-btn {
+        background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+        border: none;
+        border-radius: 20px;
+        padding: 8px 16px;
+        color: #000;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .balance {
+        background: rgba(0, 255, 127, 0.2);
+        border: 1px solid #00ff7f;
+        border-radius: 10px;
+        padding: 8px 16px;
+        color: #00ff7f;
+        font-weight: bold;
+        animation: balanceGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes balanceGlow {
+        0% { box-shadow: 0 0 5px rgba(0, 255, 127, 0.3); }
+        100% { box-shadow: 0 0 20px rgba(0, 255, 127, 0.6); }
+    }
+
+    .menu-icon {
+        color: #fff;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    /* Multipliers Row */
+    .multipliers-row {
+        padding: 15px 20px;
+        background: rgba(0, 0, 0, 0.5);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .multipliers {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 5px 0;
+    }
+
+    .multiplier {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 6px 12px;
+        white-space: nowrap;
+        font-weight: bold;
+        font-size: 14px;
+        animation: multiplierBlink 1.5s ease-in-out infinite;
+    }
+
+    .multiplier.high {
+        background: rgba(138, 43, 226, 0.8);
+        color: white;
+    }
+
+    .multiplier.medium {
+        background: rgba(30, 144, 255, 0.8);
+        color: white;
+    }
+
+    .multiplier.low {
+        background: rgba(255, 69, 0, 0.8);
+        color: white;
+    }
+
+    @keyframes multiplierBlink {
+        0%, 100% { opacity: 0.8; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* Main Layout */
+    .main-layout {
+        display: flex;
+        min-height: calc(100vh - 140px);
+    }
+
+    /* Players Sidebar */
+    .players-sidebar {
+        width: 400px;
+        background: rgba(0, 0, 0, 0.6);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-y: auto;
+    }
+
+    .sidebar-header {
+        padding: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .total-bets {
+        color: #00ff7f;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .previous-game {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+    }
+
+    .players-header {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 10px;
+        padding: 10px 15px;
+        background: rgba(255, 255, 255, 0.05);
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: bold;
+    }
+
+    .players-list {
+        max-height: calc(100vh - 300px);
+        overflow-y: auto;
+    }
+
+    .player-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 10px;
+        padding: 12px 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        animation: playerRowFade 0.5s ease-in-out;
+        align-items: center;
+    }
+
+    @keyframes playerRowFade {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .player-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .player-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .player-name {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 14px;
+    }
+
+    .player-bet {
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .player-multiplier {
+        font-weight: bold;
+        font-size: 14px;
+        padding: 4px 8px;
+        border-radius: 12px;
+    }
+
+    .player-multiplier.high {
+        background: rgba(138, 43, 226, 0.8);
+        color: white;
+    }
+
+    .player-multiplier.medium {
+        background: rgba(30, 144, 255, 0.8);
+        color: white;
+    }
+
+    .player-multiplier.low {
+        background: rgba(255, 69, 0, 0.8);
+        color: white;
+    }
+
+    .player-winnings {
+        font-weight: bold;
+        color: #00ff7f;
+        font-size: 14px;
+    }
+
+    /* Game Area */
+    .game-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .game-chart {
+        flex: 1;
+        background: #000;
+        position: relative;
+        overflow: hidden;
+        min-height: 400px;
+    }
+
+    .chart-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .multiplier-display {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 80px;
+        font-weight: 900;
+        color: #ffffff;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    .flew-away-message {
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 24px;
+        font-weight: bold;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        z-index: 10;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .flew-away-message.show {
+        opacity: 1;
+    }
+
+    /* Betting Area */
+    .betting-area {
+        background: rgba(0, 0, 0, 0.6);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 25px;
+    }
+
+    .bet-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .bet-tab {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 16px;
+    }
+
+    .bet-tab.active {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .bet-amount-display {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .bet-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .bet-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 16px;
+    }
+
+    .bet-control:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    /* MAIN BET BUTTON */
+    .bet-button {
+        width: 100%;
+        border: none;
+        border-radius: 15px;
+        padding: 25px 20px;
+        font-size: 24px;
+        font-weight: 900;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        min-height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* BOTÃO VERDE - APOSTAR */
+    .bet-button.bet {
+        background: linear-gradient(135deg, #00ff7f 0%, #00cc66 50%, #00aa55 100%);
+        color: #000;
+        border: 3px solid #00ff7f;
+        animation: betButtonGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes betButtonGlow {
+        0% { 
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 255, 127, 0.4);
+            transform: translateY(0);
+        }
+        100% { 
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 255, 127, 0.6);
+            transform: translateY(-3px);
+        }
+    }
+
+    /* BOTÃO AMARELO - RETIRAR */
+    .bet-button.withdraw {
+        background: linear-gradient(135deg, #ffd700 0%, #ffcc00 50%, #ffaa00 100%);
+        color: #000;
+        border: 3px solid #ffd700;
+        animation: withdrawButtonPulse 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes withdrawButtonPulse {
+        0% { 
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 25px rgba(255, 215, 0, 0.6);
+            transform: translateY(0) scale(1);
+        }
+        100% { 
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 215, 0, 0.9);
+            transform: translateY(-3px) scale(1.02);
+        }
+    }
+
+    /* BOTÃO CINZA - AGUARDE */
+    .bet-button.waiting {
+        background: linear-gradient(135deg, #666 0%, #555 50%, #444 100%);
+        color: rgba(255, 255, 255, 0.7);
+        cursor: not-allowed;
+        border: 3px solid #666;
+        animation: none;
+    }
+
+    /* TEXTO DO VALOR NO BOTÃO */
+    .bet-button-value {
+        display: block;
+        font-size: 20px;
+        font-weight: 700;
+        margin-top: 5px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Modal */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(15px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s ease;
+    }
+
+    .modal-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal {
+        background: linear-gradient(145deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+        border-radius: 25px;
+        padding: 50px 40px;
+        text-align: center;
+        max-width: 550px;
+        width: 90%;
+        border: 3px solid #ffd700;
+        box-shadow: 
+            0 25px 50px rgba(0, 0, 0, 0.8),
+            0 0 50px rgba(255, 215, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transform: scale(0.7) translateY(50px);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .modal-overlay.show .modal {
+        transform: scale(1) translateY(0);
+    }
+
+    /* Efeito de brilho animado no fundo do modal */
+    .modal::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+        animation: modalShine 3s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    @keyframes modalShine {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    }
+
+    .modal-icon {
+        font-size: 100px;
+        margin-bottom: 25px;
+        animation: modalIconBounce 2s ease-in-out infinite;
+        text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+    }
+
+    @keyframes modalIconBounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1); }
+        40% { transform: translateY(-15px) scale(1.1); }
+        60% { transform: translateY(-8px) scale(1.05); }
+    }
+
+    .modal-title {
+        font-size: 42px;
+        font-weight: 900;
+        color: #ffd700;
+        margin-bottom: 20px;
+        text-shadow: 
+            2px 2px 4px rgba(0, 0, 0, 0.8),
+            0 0 20px rgba(255, 215, 0, 0.6);
+        animation: modalTitleGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes modalTitleGlow {
+        0% { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6); }
+        100% { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.9); }
+    }
+
+    .modal-win-amount {
+        font-size: 36px;
+        font-weight: 800;
+        color: #00ff7f;
+        margin-bottom: 25px;
+        text-shadow: 
+            2px 2px 4px rgba(0, 0, 0, 0.8),
+            0 0 25px rgba(0, 255, 127, 0.7);
+        animation: modalAmountPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes modalAmountPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .modal-bonus {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 50px;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 25px 0;
+        display: inline-block;
+        box-shadow: 
+            0 8px 25px rgba(238, 90, 36, 0.4),
+            0 0 20px rgba(255, 107, 107, 0.3);
+        animation: modalBonusBlink 2s ease-in-out infinite;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes modalBonusBlink {
+        0%, 100% { 
+            box-shadow: 0 8px 25px rgba(238, 90, 36, 0.4), 0 0 20px rgba(255, 107, 107, 0.3);
+            transform: scale(1);
+        }
+        50% { 
+            box-shadow: 0 12px 35px rgba(238, 90, 36, 0.6), 0 0 30px rgba(255, 107, 107, 0.5);
+            transform: scale(1.02);
+        }
+    }
+
+    .modal-cta-button {
+        background: linear-gradient(135deg, #ffd700 0%, #ffb347 50%, #ff8c00 100%);
+        border: none;
+        border-radius: 20px;
+        padding: 20px 40px;
+        color: #000;
+        font-size: 22px;
+        font-weight: 900;
+        cursor: pointer;
+        margin: 25px 10px 15px 10px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 
+            0 10px 30px rgba(255, 140, 0, 0.4),
+            0 0 25px rgba(255, 215, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-cta-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .modal-cta-button:hover::before {
+        left: 100%;
+    }
+
+    .modal-cta-button:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 
+            0 15px 40px rgba(255, 140, 0, 0.6),
+            0 0 35px rgba(255, 215, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        background: linear-gradient(135deg, #ffdc00 0%, #ffc107 50%, #ff9800 100%);
+    }
+
+    .modal-cta-button:active {
+        transform: translateY(-1px) scale(1.02);
+    }
+
+    .modal-cta-icon {
+        font-size: 24px;
+        animation: modalCtaIconSpin 2s linear infinite;
+    }
+
+    @keyframes modalCtaIconSpin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .close-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.8);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin: 10px;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .close-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-2px);
+    }
+
+    /* Efeitos de partículas de celebração */
+    .modal-particles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .particle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: #ffd700;
+        border-radius: 50%;
+        animation: particleFall 3s linear infinite;
+    }
+
+    .particle:nth-child(odd) {
+        background: #00ff7f;
+        animation-delay: -1s;
+    }
+
+    .particle:nth-child(3n) {
+        background: #ff6b6b;
+        animation-delay: -2s;
+    }
+
+    @keyframes particleFall {
+        0% {
+            transform: translateY(-100vh) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .main-layout {
+            flex-direction: column;
+        }
+
+        .players-sidebar {
+            width: 100%;
+            max-height: 200px;
+            order: 3;
+        }
+
+        .game-chart {
+            min-height: 300px;
+            height: 300px;
+        }
+
+        .multiplier-display {
+            font-size: 48px;
+        }
+
+        .nav-tabs {
+            display: none;
+        }
+
+        .bet-controls {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    /* Modal responsivo para mobile */
+    @media (max-width: 768px) {
+        .modal {
+            padding: 30px 20px;
+            width: 95%;
+            max-width: 400px;
+        }
+        
+        .modal-title {
+            font-size: 32px;
+        }
+        
+        .modal-win-amount {
+            font-size: 28px;
+        }
+        
+        .modal-bonus {
+            font-size: 16px;
+            padding: 12px 20px;
+        }
+        
+        .modal-cta-button {
+            padding: 15px 25px;
+            font-size: 18px;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .modal-icon {
+            font-size: 70px;
+            margin-bottom: 15px;
+        }
+        
+        .close-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            margin-top: 15px;
+            width: 100%;
+        }
+    }
+/* Comments Section Styling */
+.fbComments-YAGYmx1180665-element {
+padding: 5px;
+border-radius:20px;
+background-color:#fff;
+}
+.fbComments-YAGYmx1180665-element p, .fbComments-YAGYmx1180665-element span {
+font-family: 'Helvetica', 'Arial', sans-serif;
+}
+.fbComments-YAGYmx1180665-element p {
+color: #333 !important;
+}
+.fbComments-YAGYmx1180665-element span {
+color: #666 !important;
+}
+.text-\[\#365899\] {
+color: #365899 !important;
+}
+.text-\[\#90949c\] {
+color: #90949c !important;
+}
+.text-sm {
+color: #333 !important;
+}
+.text-xs {
+color: #666 !important;
+}
+/* Avião no gráfico */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.airplane {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    z-index: 15;
+    pointer-events: none;
+    transition: all 0.05s ease-out;
+    filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.8));
+}
+
+.airplane svg {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes airplaneFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-2px); }
+}
+
+.airplane.flying {
+    animation: airplaneFloat 1s ease-in-out infinite;
+}
+
+#propeller {
+    transform-origin: 95px 60px;
+}
+</style>
+</head>
+<body>
+<!-- Header -->
+<div class="header">
+    <div class="header-left">
+        <div class="logo">Aviator</div>
+        <div class="nav-tabs">
+            <div class="nav-tab active">Todas as Apostas</div>
+            <div class="nav-tab">Minhas Apostas</div>
+            <div class="nav-tab">Top</div>
+        </div>
+    </div>
+    <div class="header-right">
+        
+        <div class="balance" id="balance">4.200,00 MZN</div>
+        <div class="menu-icon">☰</div>
+    </div>
+</div>
+
+<!-- Highlighted Phrase -->
+<div style="background-color: #ff4444; color: white; text-align: center; padding: 15px; font-size: 24px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+    Transforme apenas 20MT em 9.887MT com o Aviator SECRETO que está pagando escondido
+</div>
+
+<!-- Multipliers Row -->
+<div class="multipliers-row">
+    <div class="multipliers" id="multipliers">
+        <div class="multiplier high">20.5x</div>
+        <div class="multiplier high">13.8x</div>
+        <div class="multiplier high">19.4x</div>
+        <div class="multiplier high">22.8x</div>
+        <div class="multiplier high">16.6x</div>
+        <div class="multiplier high">21.0x</div>
+        <div class="multiplier high">18.3x</div>
+        <div class="multiplier high">23.3x</div>
+        <div class="multiplier high">16.2x</div>
+        <div class="multiplier high">20.0x</div>
+        <div class="multiplier high">16.6x</div>
+        <div class="multiplier high">19.3x</div>
+        <div class="multiplier high">107.46x</div>
+        <div class="multiplier high">18.6x</div>
+        <div class="multiplier high">21.1x</div>
+        <div class="multiplier high">17.8x</div>
+    </div>
+</div>
+
+<!-- Main Layout -->
+<div class="main-layout">
+    <!-- Players Sidebar -->
+    <div class="players-sidebar">
+        <div class="sidebar-header">
+            <div class="total-bets">TOTAL DE APOSTAS: <span id="totalBets">2177</span></div>
+            <div class="previous-game">
+                <span>🔄</span>
+                <span>Jogo Anterior</span>
+            </div>
+        </div>
+        <div class="players-header">
+            <div>Usuário</div>
+            <div>Aposta</div>
+            <div>Coef.</div>
+            <div>Ganho</div>
+        </div>
+        <div class="players-list" id="playersList">
+            <!-- Players will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Game Area -->
+    <div class="game-area">
+        <div class="game-chart" id="gameChart">
+            <canvas class="chart-canvas" id="chartCanvas"></canvas>
+            <div class="airplane" id="airplane">
+    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <!-- Hélice girando -->
+        <g id="propeller" style="transform-origin: 95px 60px;">
+            <ellipse cx="95" cy="55" rx="15" ry="2" fill="#666" opacity="0.8"/>
+            <ellipse cx="95" cy="65" rx="15" ry="2" fill="#666" opacity="0.8"/>
+            <circle cx="95" cy="60" r="3" fill="#333"/>
+        </g>
+        
+        <!-- Corpo principal do avião -->
+        <ellipse cx="60" cy="60" rx="40" ry="8" fill="#ff0000"/>
+        
+        <!-- Asas -->
+        <ellipse cx="45" cy="60" rx="25" ry="5" fill="#cc0000"/>
+        
+        <!-- Cauda -->
+        <polygon points="20,60 30,55 30,65" fill="#ff0000"/>
+        <polygon points="25,50 30,48 30,55" fill="#cc0000"/>
+        <polygon points="25,70 30,72 30,65" fill="#cc0000"/>
+        
+        <!-- Cockpit -->
+        <ellipse cx="85" cy="60" rx="8" ry="4" fill="#ff6666"/>
+        
+        <!-- Brilho -->
+        <ellipse cx="80" cy="58" rx="4" ry="2" fill="#ffaaaa" opacity="0.7"/>
+    </svg>
+</div>
+            <div class="flew-away-message" id="flewAwayMessage">VOOU PARA LONGE!</div>
+            <div class="multiplier-display" id="multiplierDisplay">1.00x</div>
+        </div>
+
+        <!-- Betting Area -->
+        <div class="betting-area">
+            <div class="bet-tabs">
+                <button class="bet-tab active">Apostar</button>
+                <button class="bet-tab">Auto</button>
+            </div>
+            <div class="bet-amount-display" id="betAmount">800,00</div>
+            
+            <!-- BOTÃO PRINCIPAL -->
+            <button class="bet-button bet" id="betButton">
+                <div>APOSTAR</div>
+            </button>
+            <!-- Comments Section -->
+<div id="division-fRMYpd1175082" class="AklwPD3367766" style="background: rgba(0, 0, 0, 0.8); padding: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+<style>.px-1{padding-left:4px;padding-right:4px}.pt-0.5{padding-top:2px}.mt-4{margin-top:16px}@media (min-width:640px){.sm\:text-sm{font-size:13px;line-height:20px}}.mt-2{margin-top:8px}.mb-2{margin-bottom:8px}.flex{display:flex}.w-full{width:100%}.space-x-1>:not([hidden])~:not([hidden]){margin-left:.25rem}.items-center{align-items:center}.font-\[Helvetica\]{font-family:Helvetica,Arial,sans-serif}.cursor-pointer{cursor:pointer}.rounded-full{border-radius:99999px}.h-12{height:48px}.w-12{width:48px}.flex-col{flex-direction:column}.py-1{padding-top:4px;padding-bottom:4px}.px-3{padding-left:12px;padding-right:12px}.pl-0\.5,.px-0\.5{padding-left:2px}.rounded-\[18px\]{border-radius:18px}.bg-stone-100{background-color:#f5f5f4}.px-0\.5{padding-right:2px}.font-semibold{font-weight:600}.text-\[\#365899\]{color:#365899}.text-\[13px\]{font-size:13px}.leading-4{line-height:16px}.hover\:underline:hover{text-decoration-line:underline}.text-sm{font-size:13px}.relative{position:relative}.justify-between{justify-content:space-between}.grow{flex-grow:1}.text-xs{font-size:12px}.text-\[\#90949c\]{color:#90949c}.ml-px{margin-left:1px}.gap-1{gap:4px}.w-fit{width:fit-content}.hidden{display:none}.-mt-1{margin-top:-4px}.-mt-2{margin-top:-8px}.mr-2{margin-right:8px}.h-4,.h-5{height:16px}.drop-shadow{--tw-drop-shadow:drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));filter:var(--tw-drop-shadow)}.bg-slate-50{background-color:#f8fafc}.py-0\.5{padding-top:2px;padding-bottom:2px}.pr-1{padding-right:4px}.block{display:block}.w-4{width:16px}.z-10{z-index:10}.-ml-1{margin-left:-4px}.ml-4{margin-left:16px}.gap-x-0\.5{column-gap:2px}.mr-0\.5{margin-right:2px;margin-left:2px}.border-l{border-left-width:1px}.border-slate-300{border-color:#cbd5e1}.border-dotted{border-style:dotted}.ml-5{margin-left:20px}.h-8{height:32px}.w-8{width:32px}.h-10{height:40px}.w-10{width:40px}@media (min-width:640px){.sm\:w-16{width:64px}.sm\:ml-12{margin-left:48px}}.pl-2{padding-left:8px}</style>
+<div class="fbComments-YAGYmx1180665" style="margin-left:auto;margin-right:auto">
+<style>
+.fbComments-YAGYmx1180665-element {
+padding: 5px;
+border-radius:20px;
+background-color:#fff;
+}
+.fbComments-YAGYmx1180665-element p, .fbComments-YAGYmx1180665-element span {
+font-family: 'Helvetica', 'Arial', sans-serif;
+}
+</style>
+<div id="testimonials" class="fbComments-YAGYmx1180665-element">
+<p class="text-xs sm:text-sm leading-4 font-semibold mb-2">
+Mostrando 6 comentários
+</p>
+<div class="mb-2">
+<div class="flex w-full space-x-1 items-center font-[Helvetica]">
+<img decoding="async" src="/photo_2025-06-03 07.43.27.jpeg" class="cursor-pointer rounded-full h-10 w-10" data-recalc-dims="1">
+<div class="flex w-full flex-col py-1 px-3 rounded-[18px] bg-stone-100">
+<div class="px-0.5 py-1">
+<p class="font-semibold text-[#365899] text-[13px] leading-4 cursor-pointer hover:underline">
+Valter Zandamela
+</p>
+<p class="text-sm leading-4 pt-0.5">
+Juro que nunca ganhei nesses jogos, já até desisti uma vez… mas nessa casa fiz 2.800MT na PRIMEIRA jogada 😳🙏🙏
+</p>
+</div>
+</div>
+</div>
+<div class="flex w-full justify-between">
+<div class="w-12 sm:w-16"></div>
+<div class="grow flex gap-1 text-xs pt-0.5">
+<p class="font-semibold cursor-pointer hover:underline text-[#90949c]">
+Curtir
+</p>
+<p class="text-[#90949c]">·</p>
+<p class="font-semibold cursor-pointer hover:underline text-[#90949c]">
+Responder
+</p>
+<p class="text-[#90949c]">·</p>
+<div class="text-[#90949c] flex gap-x-0.5 cursor-pointer hover:underline">
+<p class="text-xs text-[#90949c]">
+1
+</p>
+<p class="text-[#90949c] ">min</p>
+</div>
+</div>
+<div class="-mt-2 mr-2 h-5 flex items-center relative drop-shadow rounded-full bg-slate-50 py-0.5 px-1 w-fit">
+<img decoding="async" class="w-4 block" src="https://i0.wp.com/img.imageboss.me/atm/cdn/p/l.png?ssl=1" data-recalc-dims="1">
+<img decoding="async" class="w-4 -ml-1 mr-0.5" src="https://i0.wp.com/img.imageboss.me/atm/cdn/p/h.png?ssl=1" data-recalc-dims="1">
+<span class="text-xs text-[#90949c] pt-0.5">
+325
+</span>
+</div>
+</div>
+</div>
+<div class="border-l border-slate-300 border-dotted ml-5 sm:ml-12 pl-2 mb-2">
+<div class="flex w-full space-x-1 items-center">
+<img decoding="async" src="photo_2025-06-03 07.43.34.jpeg" class="cursor-pointer rounded-full h-8 w-8" data-recalc-dims="1">
+<div class="flex w-full flex-col py-1 px-3 rounded-[18px] bg-stone-100">
+<div class="px-0.5 py-1">
+<p class="font-semibold text-[#365899] text-xs cursor-pointer hover:underline">
+Bruno Chivambo
+</p>
+<p class="text-sm leading-4 pt-0.5">
+Xeee nunca vi uma casa dessas! Só hoje peguei 6 rosas seguidas, parecia mentira 😭😭🙏 Tô até a tremer!
+</p>
+</div>
+</div>
+</div>
+<div class="flex w-full justify-between">
+<div class="w-10 sm:w-16"></div>
+<div class="grow flex gap-1 text-xs">
+<p class="font-semibold hover:underline cursor-pointer text-[#90949c]">
+Curtir
+</p>
+<p class="text-[#90949c]">·</p>
+<p class="font-semibold hover:underline cursor-pointer text-[#90949c]">
+Responder
+</p>
+<p class="text-[#90949c]">·</p>
+<div class="text-[#90949c] flex gap-x-0.5 cursor-pointer hover:underline">
+<p class="text-xs text-[#90949c]">
+1
+</p>
+<p class="text-[#90949c] ">min</p>
+</div>
+</div>
+<div class="-mt-2 mr-2 h-5 flex items-center relative drop-shadow rounded-full bg-slate-50 py-0.5 px-1 w-fit">
+<img decoding="async" class="w-4 block" src="https://i0.wp.com/img.imageboss.me/atm/cdn/p/l.png?ssl=1" data-recalc-dims="1">
+<img decoding="async" class="w-4 -ml-1 mr-0.5" src="https://i0.wp.com/img.imageboss.me/atm/cdn/p/h.png?ssl=1" data-recalc-dims="1">
+<span class="text-xs text-[#90949c] pt-0.5">
+108
+</span>
+</div>
+</div>
+</div>
+<div class="mb-2">
+<div class="flex w-full space-x-1 items-center font-[Helvetica]">
+<img decoding="async" src="photo_2025-06-03 07.43.36.jpeg" class="cursor-pointer rounded-full h-10 w-10" data-recalc-dims="1">
+<div class="flex w-full flex-col py-1 px-3 rounded-[18px] bg-stone-100">
+<div class="px-0.5 py-1">
+<p class="font-semibold text-[#365899] text-[13px] leading-4 cursor-pointer hover:underline">
+Nelson Tome
+</p>
+<p class="text-sm leading-4 pt-0.5">
+Alguém aí já testou essa casa?? Quero saber se paga mesmo ou é só paulada…
+</p>
+</div>
+</div>
+</div>
+<div class="flex w-full justify-between">
+<div class="w-12 sm:w-16"></div>
+<div class="grow flex gap-1 text-xs pt-0.5">
+<p class="font-semibold cursor-pointer hover:underline text-[#90949c]">
+Curtir
+</p>
+<p class="text-[#90949c]">·</p>
+<p class="font-semibold cursor-pointer hover:underline text-[#90949c]">
+Responder
+</p>
+<p class="text-[#90949c]">·</p>
+<div class="text-[#90949c] flex gap-x-0.5 cursor-pointer hover:underline">
+<p class="text-xs text-[#90949c]">
+1
+</p>
+<p class="text-[#90949c] ">min</p>
+</div>
+</div>
+<div class="-mt-2 mr-2 h-5 flex items-center relative drop-shadow rounded-full bg-slate-50 py-0.5 px-1 w-fit">
+<img decoding="async" class="w-4 block" src="https://i0.wp.com/img.imageboss.me/atm/cdn/p/l.png?ssl=1" data-recalc-dims="1">
+<img decoding="async" class="w-4 -ml-1 mr-0.5" src="https://i0.wp.com/img.imageboss.me/atm/cdn/p/h.png?ssl=1" data-recalc-dims="1">
+<span class="text-xs text-[#90949c] pt-0.5">
+481
+</span>
+</div>
+</div>
+</div>
+<div class="border-l border-slate-300 border-dotted ml-5 sm:ml-12 pl-2 mb-2">
+<div class="flex w-full space-x-1 items-center">
+<img decoding="async" src="photo_2025-06-03 07.43.32.jpeg" class="cursor-pointer rounded-full h-8 w-8" data-recalc-dims="1">
+<div class="flex w-full flex-col py-1 px-3 rounded-[18px] bg-stone-100">
+<div class="px-0.5 py-1">
+<p class="font-semibold text-[#365899] text-xs cursor-pointer hover:underline">
+Adelino Joao
+</p>
+<p class="text-sm leading-4 pt-0.5">
+Brou também achei que era papo no início, mas testei por esse link aqui e FUNCIONA! Fiz 13.000MT hoje 🔥🔥🔥
+</p>
+</div>
+</div>
+</div>
+<div class="flex w-full justify-between">
+<div class="w-10 sm:w-16"></div>
+<div class="grow flex gap-1 text-xs">
+<p class="font-semibold hover:underline cursor-pointer text-[#90949c]">
+Curtir
+</p>
+<p class="text-[#90949c]">·</p>
+<p class="font-semibold hover:underline cursor-pointer text-[#90949c]">
+Responder
+</p>
+<p class="text-[#90949c]">·</p>
+<div class="text-[#90949c] flex gap-x-0.5 cursor-pointer hover:underline">
+<p class="text-xs text-[#90949c]">
+1
+</p>
+<p class="text-[#90949c] ">min</p>
+</div>
+</div>
+<div class="-mt-2 mr-2 h-5 flex items-center relative drop-shadow rounded-full bg-slate-50 py-0.5 px-1 w-fit">
+<img decoding="async" class="w-4 block" src="https://i0.wp.com/img.imageboss.me/atm/cdn/p/l.png?ssl=1" data-recalc-dims="1">
+<img decoding="async" class="w-4 -ml-1 mr-0.5" src="https://i0.wp.com/img.imageboss.me/atm/cdn/p/h.png?ssl=1" data-recalc-dims="1">
+<span class="text-xs text-[#90949c] pt-0.5">
+194
+</span>c:
+</div>
+</div>
+</div>
+<div class="border-l border-slate-300 border-dotted ml-5 sm:ml-12 pl-2 mb-2">
+<div class="flex w-full space-x-1 items-center">
+<img decoding="async" src="photo_2025-06-03 07.43.36.jpeg" class="cursor-pointer rounded-full h-8 w-8" data-recalc-dims="1">
+<div class="flex w-full flex-col py-1 px-3 rounded-[18px] bg-stone-100">
+<div class="px-0.5 py-1">
+<p class="font-semibold text-[#365899] text-xs cursor-pointer hover:underline">
+Nelson Tome
+</p>
+<p class="text-sm leading-4 pt-0.5">
+Testei agora mesmo com 100MT só pra ver se era real… e fiz 1.800Meticais na hora💯💯
+</p>
+</div>
+</div>
+</div>
+<div class="flex w-full justify-between">
+<div class="w-10 sm:w-16"></div>
+<div class="grow flex gap-1 text-xs">
+<p class="font-semibold hover:underline cursor-pointer text-[#90949c]">
+Curtir
+</p>
+<p class="text-[#90949c]">·</p>
+<p class="font-semibold hover:underline cursor-pointer text-[#90949c]">
+Responder
+</p>
+<p class="text-[#90949c]">·</p>
+<div class="text-[#90949c] flex gap-x-0.5 cursor-pointer hover:underline">
+<p class="text-xs text-[#90949c]">
+1
+</p>
+<p class="text-[#90949c] ">min</p>
+</div>
+</div>
+<div class="-mt-2 mr-2 h-5 flex items-center relative drop-shadow rounded-full bg-slate-50 py-0.5 px-1 w-fit">
+<img decoding="async" class="w-4 block" src="https://i0.wp.com/img.imageboss.me/atm/cdn/p/l.png?ssl=1" data-recalc-dims="1">
+<img decoding="async" class="w-4 -ml-1 mr-0.5" src="https://i0.wp.com/img.imageboss.me/atm/cdn/p/h.png?ssl=1" data-recalc-dims="1">
+<span class="text-xs text-[#90949c] pt-0.5">
+362
+</span>
+</div>
+</div>
+</div>
+<div class="mb-2">
+<div class="flex w-full space-x-1 items-center font-[Helvetica]">
+<img decoding="async" src="photo_2025-06-03 07.43.39.jpeg" class="cursor-pointer rounded-full h-10 w-10" data-recalc-dims="1">
+<div class="flex w-full flex-col py-1 px-3 rounded-[18px] bg-stone-100">
+<div class="px-0.5 py-1">
+<p class="font-semibold text-[#365899] text-[13px] leading-4 cursor-pointer hover:underline">
+Celso Mutemba
+</p>
+<p class="text-sm leading-4 pt-0.5">
+Quem ainda tá duvidar é porque gosta de sofrer 😭 Eu já tô a ganhar 4 dias seguidos com essa casa! 😎🤑
+</p>
+</div>
+</div>
+</div>
+<div class="flex w-full justify-between">
+<div class="w-12 sm:w-16"></div>
+<div class="grow flex gap-1 text-xs pt-0.5">
+<p class="font-semibold cursor-pointer hover:underline text-[#90949c]">
+Curtir
+</p>
+<p class="text-[#90949c]">·</p>
+<p class="font-semibold cursor-pointer hover:underline text-[#90949c]">
+Responder
+</p>
+<p class="text-[#90949c]">·</p>
+<div class="text-[#90949c] flex gap-x-0.5 cursor-pointer hover:underline">
+<p class="text-xs text-[#90949c]">
+1
+</p>
+<p class="text-[#90949c] ">min</p>
+</div>
+</div>
+<div class="-mt-2 mr-2 h-5 flex items-center relative drop-shadow rounded-full bg-slate-50 py-0.5 px-1 w-fit">
+<img decoding="async" class="w-4 block" src="https://i0.wp.com/img.imageboss.me/atm/cdn/p/l.png?ssl=1" data-recalc-dims="1">
+<img decoding="async" class="w-4 -ml-1 mr-0.5" src="https://i0.wp.com/img.imageboss.me/atm/cdn/p/h.png?ssl=1" data-recalc-dims="1">
+<span class="text-xs text-[#90949c] pt-0.5">
+410
+</span>
+</div>
+</div>
+</div>
+<p class="text-xs sm:text-sm leading-4 font-semibold mt-4" style="color:#555;text-align:center;">
+Você precisa estar logado para comentar.
+</p>
+</div>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <div class="modal-particles" id="modalParticles"></div>
+        <div class="modal-icon">🎉</div>
+        <div class="modal-title">PARABÉNS!</div>
+        <div class="modal-win-amount" id="modalWinAmount">Você ganhou 0,00 MZN!</div>
+        <div class="modal-bonus">
+            ✨ + Bônus exclusivo de 5.000 MZN! ✨
+        </div>
+        <a href="https://media1.placard.co.mz/redirect.aspx?pid=5227&bid=1690" target="_blank" class="modal-cta-button">
+            <span class="modal-cta-icon">🚀</span>
+            Criar minha conta agora
+        </a>
+        <button class="close-btn" onclick="closeModal()">
+            Fechar
+        </button>
+    </div>
+</div>
+
+<script>
+    let currentBalance = 4200.00;
+    let currentMultiplier = 1.00;
+    let gameState = 'ready'; // ready, flying, crashed, processing
+    let gameStartTime = 0;
+    let canvas, ctx;
+    let animationId;
+    let totalBets = 2177;
+    let betAmount = 800.00;
+    let activeBet = null;
+    let autoStartTimer = null; // Timer para início automático
+    let autoStarted = false; // Flag para controlar se o jogo começou automaticamente
+
+    // Players data
+    let players = [
+        { name: 'l***z', avatar: 'L', bet: 500.00, multiplier: 2.23, winnings: 1115.00, status: 'won' },
+        { name: 'l***e', avatar: 'L', bet: 400.00, multiplier: 1.99, winnings: 796.00, status: 'won' },
+        { name: 'a***o', avatar: 'A', bet: 300.00, multiplier: 2.27, winnings: 681.00, status: 'won' },
+        { name: 'l***1', avatar: 'L', bet: 300.00, multiplier: 4.23, winnings: 1269.00, status: 'won' },
+        { name: 's***n', avatar: 'S', bet: 300.00, multiplier: 2.09, winnings: 627.00, status: 'won' },
+        { name: 's***a', avatar: 'S', bet: 250.00, multiplier: null, winnings: null, status: 'betting' },
+        { name: 'l***2', avatar: 'L', bet: 200.00, multiplier: 2.16, winnings: 432.00, status: 'won' }
+    ];
+
+    // Initialize canvas
+    function initCanvas() {
+        canvas = document.getElementById('chartCanvas');
+        ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+    }
+
+    // Draw diagonal rays background - fundo com linhas diagonais
+    function drawBackground() {
+        // Fundo preto sólido
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Linhas diagonais sutis
+        const numRays = 20;
+        
+        for (let i = 0; i < numRays; i++) {
+            const x = canvas.width * (i / numRays);
+            
+            ctx.strokeStyle = i % 2 === 0 ? '#111111' : '#0a0a0a';
+            ctx.lineWidth = canvas.width / 30;
+            
+            ctx.beginPath();
+            ctx.moveTo(x, canvas.height);
+            ctx.lineTo(x + canvas.width / 2, 0);
+            ctx.stroke();
+        }
+    }
+
+    // Desenhar a curva vermelha começando do canto inferior esquerdo
+    function drawFlightCurve(progress) {
+        if (progress <= 0) return;
+
+        // Pontos de início - EXATAMENTE no canto inferior esquerdo
+        const startX = 0;
+        const startY = canvas.height;
+        
+        // Calcular pontos da curva baseado no progresso
+        const points = [];
+        const numPoints = Math.floor(100 * progress); // Só calcular pontos até onde chegou
+        
+        for (let i = 0; i <= numPoints; i++) {
+            const t = i / 100; // Normalizar baseado no total, não no progresso
+            const x = canvas.width * t * progress; // X cresce com o progresso
+            
+            // Função exponencial mais suave - começa devagar e acelera
+            const curveIntensity = Math.pow(t * progress, 0.6); // Curva mais suave
+            const maxHeight = canvas.height * 0.85; // Altura máxima da curva
+            const y = startY - (maxHeight * curveIntensity);
+            
+            points.push({ x, y });
+        }
+        
+        if (points.length < 2) return;
+        
+        // PRIMEIRO: Desenhar a área preenchida (sombra) - SÓ onde a curva passou
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, 'rgba(255, 0, 0, 0.3)'); // Vermelho transparente no topo
+        gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.2)'); // Meio
+        gradient.addColorStop(1, 'rgba(255, 0, 0, 0.1)'); // Mais transparente embaixo
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY); // Começar do canto inferior esquerdo
+        
+        // Seguir a curva
+        for (let i = 0; i < points.length; i++) {
+            ctx.lineTo(points[i].x, points[i].y);
+        }
+        
+        // Fechar a área voltando para a base
+        ctx.lineTo(points[points.length - 1].x, startY);
+        ctx.lineTo(startX, startY);
+        ctx.closePath();
+        ctx.fill();
+        
+        // SEGUNDO: Desenhar a linha vermelha brilhante por cima
+        ctx.strokeStyle = '#ff0000';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        
+        // Efeito de brilho na linha
+        ctx.shadowColor = '#ff0000';
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        
+        ctx.beginPath();
+        ctx.moveTo(startX, startY); // Começar do canto inferior esquerdo
+        
+        // Desenhar a linha seguindo os pontos calculados
+        for (let i = 0; i < points.length; i++) {
+            ctx.lineTo(points[i].x, points[i].y);
+        }
+        
+        ctx.stroke();
+        
+        // Limpar efeitos de sombra
+        ctx.shadowBlur = 0;
+        
+        // POSICIONAR O AVIÃO na ponta da curva
+        updateAirplanePosition(points);
+}
+
+// Nova função para atualizar posição do avião
+function updateAirplanePosition(points) {
+    const airplane = document.getElementById('airplane');
+    if (!airplane || points.length < 2) {
+        airplane.style.display = 'none';
+        return;
+    }
+    
+    // Pegar o último ponto da curva (ponta)
+    const lastPoint = points[points.length - 1];
+    const secondLastPoint = points[points.length - 2] || points[points.length - 1];
+    
+    // Calcular ângulo da curva para rotacionar o avião
+    const deltaX = lastPoint.x - secondLastPoint.x;
+    const deltaY = lastPoint.y - secondLastPoint.y;
+    const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+    
+    // Posicionar o avião na ponta da curva (melhor centralização)
+    airplane.style.display = 'block';
+    airplane.style.left = (lastPoint.x - 30) + 'px'; // Centralizar horizontalmente
+    airplane.style.top = (lastPoint.y - 30) + 'px';  // Centralizar verticalmente
+    
+    // Rotacionar o avião seguindo a direção da curva
+    const svg = airplane.querySelector('svg');
+    const propeller = airplane.querySelector('#propeller');
+    
+    if (svg) {
+        svg.style.transform = `rotate(${angle}deg)`;
+    }
+    
+    // Animar hélice girando
+    if (propeller && gameState === 'flying') {
+        propeller.style.animation = 'spin 0.1s linear infinite';
+    }
+    
+    // Adicionar classe de animação durante o voo
+    if (gameState === 'flying') {
+        airplane.classList.add('flying');
+    } else {
+        airplane.classList.remove('flying');
+    }
+}
+
+    // Main draw function
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        drawBackground();
+        
+        if (gameState === 'flying') {
+            const elapsed = Date.now() - gameStartTime;
+            const progress = Math.min(elapsed / 10000, 1);
+            
+            drawFlightCurve(progress);
+        }
+    }
+
+    // Start new round
+    function startNewRound() {
+    console.log('=== NOVA RODADA ===');
+    gameState = 'ready';
+    currentMultiplier = 1.00;
+    activeBet = null;
+    autoStarted = false;
+    
+    // Esconder avião
+    const airplane = document.getElementById('airplane');
+    if (airplane) {
+        airplane.style.display = 'none';
+        airplane.classList.remove('flying');
+    }
+    
+    // Limpar timer anterior se existir
+    if (autoStartTimer) {
+        clearTimeout(autoStartTimer);
+        autoStartTimer = null;
+    }
+    
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+    }
+    
+    document.getElementById('flewAwayMessage').classList.remove('show');
+    updateMultiplierDisplay();
+    updateBetButton();
+    
+    draw();
+
+    // Iniciar timer automático de 4 segundos
+    autoStartTimer = setTimeout(() => {
+        if (gameState === 'ready') {
+            console.log('=== INICIANDO VOO AUTOMÁTICO ===');
+            autoStarted = true;
+            
+            // FAZER APOSTA AUTOMÁTICA quando inicia automaticamente
+            if (currentBalance >= betAmount) {
+                activeBet = betAmount;
+                currentBalance -= betAmount;
+                updateBalanceDisplay();
+                console.log('Aposta automática feita:', activeBet);
+            }
+            
+            startFlying();
+        }
+    }, 4000);
+}
+
+    // Start flying phase
+    function startFlying() {
+        console.log('=== INICIANDO VOO ===');
+        
+        // Limpar timer automático se existir
+        if (autoStartTimer) {
+            clearTimeout(autoStartTimer);
+            autoStartTimer = null;
+        }
+        
+        gameState = 'flying';
+        gameStartTime = Date.now();
+        
+        updateBetButton();
+        animateGame();
+    }
+
+    // Animate game
+    function animateGame() {
+        if (gameState !== 'flying') return;
+        
+        const elapsed = Date.now() - gameStartTime;
+        const multiplierIncrease = elapsed / 12000;
+        currentMultiplier = 1.00 + multiplierIncrease;
+        
+        updateMultiplierDisplay();
+        updateBetButton();
+        draw();
+        
+        animationId = requestAnimationFrame(animateGame);
+    }
+
+    // Place bet
+    function placeBet() {
+        console.log('=== FAZENDO APOSTA MANUAL ===');
+        if (gameState !== 'ready' || currentBalance < betAmount) {
+            console.log('Não pode apostar:', gameState, currentBalance, betAmount);
+            return;
+        }
+
+        activeBet = betAmount;
+        currentBalance -= betAmount;
+        autoStarted = false; // Marcar como início manual
+        console.log('Aposta manual feita:', activeBet);
+
+        updateBalanceDisplay();
+
+        // Limpar timer automático e iniciar voo imediatamente
+        if (autoStartTimer) {
+            clearTimeout(autoStartTimer);
+            autoStartTimer = null;
+        }
+        
+        startFlying();
+    }
+
+    // Withdraw bet
+    function withdrawBet() {
+        console.log('🎉 Retirando aposta...');
+        
+        if (!activeBet) {
+            console.log('❌ Nenhuma aposta ativa para retirar');
+            return;
+        }
+
+        const winAmount = activeBet * currentMultiplier;
+        currentBalance += winAmount;
+        updateBalanceDisplay();
+
+        // Abrir modal
+        openWinModal(winAmount);
+
+        // Parar jogo
+        gameState = 'crashed';
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+        }
+
+        // Nova rodada em 3 segundos
+        setTimeout(() => {
+            startNewRound();
+        }, 3000);
+    }
+
+    // Update multiplier display
+    function updateMultiplierDisplay() {
+        const display = document.getElementById('multiplierDisplay');
+        display.textContent = currentMultiplier.toFixed(2) + 'x';
+    }
+
+    // Update bet button
+    function updateBetButton() {
+        const button = document.getElementById('betButton');
+
+        if (gameState === 'ready') {
+            // APOSTAR (verde)
+            button.className = 'bet-button bet';
+            button.innerHTML = '<div>APOSTAR</div>';
+            button.disabled = false;
+    
+        } else if (gameState === 'flying') {
+            // Durante o voo - sempre mostrar RETIRAR se tem aposta ativa
+            if (activeBet) {
+                const potentialWin = activeBet * currentMultiplier;
+                const valueText = formatMZN(potentialWin);
+                
+                button.disabled = false;
+                button.className = 'bet-button withdraw';
+                button.innerHTML = `
+                    <div>
+                        <div>RETIRAR</div>
+                        <div class="bet-button-value">${valueText}</div>
+                    </div>
+                `;
+            } else {
+                // Se não tem aposta ativa durante o voo, permitir apostar
+                const potentialWin = betAmount * currentMultiplier;
+                const valueText = formatMZN(potentialWin);
+                
+                button.disabled = false;
+                button.className = 'bet-button withdraw';
+                button.innerHTML = `
+                    <div>
+                        <div>APOSTAR AGORA</div>
+                        <div class="bet-button-value">${valueText}</div>
+                    </div>
+                `;
+            }
+    
+        } else {
+            // Estado padrão
+            button.className = 'bet-button bet';
+            button.innerHTML = '<div>APOSTAR</div>';
+            button.disabled = false;
+        }
+    }
+
+    // Format MZN currency
+    function formatMZN(amount) {
+        return amount.toFixed(2).replace('.', ',') + ' MZN';
+    }
+
+    // Set bet amount
+    function setBetAmount(amount) {
+        betAmount = amount;
+        document.getElementById('betAmount').textContent = formatMZN(amount);
+    }
+
+    // EVENT LISTENERS
+    function setupEventListeners() {
+        console.log('Configurando event listeners...');
+
+        const betButton = document.getElementById('betButton');
+        if (betButton) {
+            betButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+        
+                console.log('Botão clicado! Estado:', gameState, 'Aposta ativa:', activeBet);
+        
+                if (gameState === 'ready') {
+                    // Estado ready - fazer aposta manual
+                    placeBet();
+                } else if (gameState === 'flying') {
+                    if (activeBet) {
+                        // Se tem aposta ativa, retirar
+                        withdrawBet();
+                    } else {
+                        // Se não tem aposta ativa, fazer aposta durante o voo
+                        console.log('=== FAZENDO APOSTA DURANTE O VOO ===');
+                        if (currentBalance >= betAmount) {
+                            activeBet = betAmount;
+                            currentBalance -= betAmount;
+                            updateBalanceDisplay();
+                            updateBetButton();
+                            console.log('Aposta feita durante o voo:', activeBet);
+                        }
+                    }
+                }
+            });
+            console.log('Event listener adicionado ao botão');
+        }
+
+        // Close modal when clicking outside
+        const modalOverlay = document.getElementById('modalOverlay');
+        if (modalOverlay) {
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        }
+    }
+
+    // Create celebration particles
+    function createCelebrationParticles() {
+        const particlesContainer = document.getElementById('modalParticles');
+        if (!particlesContainer) return;
+
+        particlesContainer.innerHTML = '';
+
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 3 + 's';
+            particle.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // Open win modal
+    function openWinModal(winAmount) {
+        console.log('Abrindo modal com valor:', winAmount);
+
+        // Atualizar texto do modal
+        const modalWinAmount = document.getElementById('modalWinAmount');
+        if (modalWinAmount) {
+            modalWinAmount.textContent = `Você ganhou ${formatMZN(winAmount)}!`;
+            console.log('Texto atualizado:', modalWinAmount.textContent);
+        }
+
+        // Criar partículas
+        createCelebrationParticles();
+
+        // Mostrar modal
+        const modalOverlay = document.getElementById('modalOverlay');
+        if (modalOverlay) {
+            modalOverlay.style.display = 'flex';
+            // Forçar reflow antes de adicionar a classe
+            modalOverlay.offsetHeight;
+            modalOverlay.classList.add('show');
+            console.log('Modal exibido');
+        } else {
+            console.log('❌ Modal overlay não encontrado');
+        }
+    }
+
+    // Close modal
+    function closeModal() {
+        const modalOverlay = document.getElementById('modalOverlay');
+        if (modalOverlay) {
+            modalOverlay.classList.remove('show');
+            setTimeout(() => {
+                modalOverlay.style.display = 'none';
+            }, 400);
+        }
+    }
+
+    // Update balance display
+    function updateBalanceDisplay() {
+        document.getElementById('balance').textContent = formatMZN(currentBalance);
+    }
+
+    // Add to history
+    function addToHistory(multiplier) {
+        const multipliersContainer = document.getElementById('multipliers');
+        const newMultiplier = document.createElement('div');
+        newMultiplier.className = 'multiplier ' + getMultiplierClass(multiplier);
+        newMultiplier.textContent = multiplier.toFixed(2) + 'x';
+
+        multipliersContainer.insertBefore(newMultiplier, multipliersContainer.firstChild);
+
+        if (multipliersContainer.children.length > 16) {
+            multipliersContainer.removeChild(multipliersContainer.lastChild);
+        }
+    }
+
+    // Get multiplier class
+    function getMultiplierClass(multiplier) {
+        if (multiplier >= 10) return 'high';
+        if (multiplier >= 2) return 'medium';
+        return 'low';
+    }
+
+    // Render players list
+    function renderPlayers() {
+        const playersListEl = document.getElementById('playersList');
+        playersListEl.innerHTML = '';
+
+        players.forEach((player, index) => {
+            const playerRow = document.createElement('div');
+            playerRow.className = 'player-row';
+    
+            const multiplierClass = player.multiplier ? getMultiplierClass(player.multiplier) : '';
+            const multiplierDisplay = player.multiplier ? `${player.multiplier.toFixed(2)}x` : '-';
+            const winningsDisplay = player.winnings ? formatMZN(player.winnings) : '-';
+    
+            playerRow.innerHTML = `
+                <div class="player-info">
+                    <div class="player-avatar">${player.avatar}</div>
+                    <div class="player-name">${player.name}</div>
+                </div>
+                <div class="player-bet">${formatMZN(player.bet)}</div>
+                <div class="player-multiplier ${multiplierClass}">${multiplierDisplay}</div>
+                <div class="player-winnings">${winningsDisplay}</div>
+            `;
+    
+            playersListEl.appendChild(playerRow);
+        });
+    }
+
+    // Initialize
+    window.addEventListener('load', function() {
+        console.log('🚀 Inicializando jogo...');
+        initCanvas();
+        renderPlayers();
+        updateBalanceDisplay();
+        setBetAmount(800);
+        setupEventListeners();
+        startNewRound();
+        console.log('✅ Jogo inicializado');
+    });
+</script>
+</body>
+</html>
